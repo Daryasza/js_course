@@ -32,14 +32,8 @@ function returnFirstArgument(value) {
    sumWithDefaults(10) вернет 110
  */
 
-function sumWithDefaults(a, b = 100, ...c) {
-  return (
-    a +
-    b +
-    c.reduce(function (a, b) {
-      return a + b;
-    }, 0)
-  );
+function sumWithDefaults(a, b = 100) {
+  return a + b;
 }
 
 // function sumWithDefaults(a, b=100, ...c) {
