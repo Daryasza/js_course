@@ -14,11 +14,10 @@
 
 function forEach(array, fn) {
   for (let i = 0; i < array.length; i++) {
-    fn(array[i]);
+    fn(array[i], i, array);
   }
 }
 
-forEach([1, 2, 5, 6, 7], (el) => console.log(el * el));
 /*
  Задание 2:
 
@@ -31,9 +30,9 @@ forEach([1, 2, 5, 6, 7], (el) => console.log(el * el));
 function map(array, fn) {
   const newArray = [];
 
-  array.forEach((element) => {
-    newArray.push(fn(element));
-  });
+  for (let i = 0; i < array.length; i++) {
+    newArray.push(fn(array[i], i, array));
+  }
 
   return newArray;
 }
@@ -49,27 +48,15 @@ function map(array, fn) {
  */
 
 function reduce(array, fn, initial) {
-  let total;
+  let total = initial || array[0];
+  let i = initial === undefined ? 1 : 0;
 
-  if (initial === undefined) {
-    total = undefined;
-  } else {
-    total = initial;
-  }
-
-  for (let i = 0; i < array.length; i++) {
-    if (total === undefined) {
-      total = array[i];
-      continue;
-    }
-
-    total = fn(total, array[i]);
+  for (; i < array.length; i++) {
+    total = fn(total, array[i], i, array);
   }
 
   return total;
 }
-
-reduce([1, 2, 3], (all, current) => all + current);
 
 /*
  Задание 4:
@@ -82,9 +69,7 @@ reduce([1, 2, 3], (all, current) => all + current);
 
 // eslint-disable-next-line no-unused-vars
 function upperProps(obj) {
-  const uppercasedArray = Object.keys(obj).map((element) => element.toUpperCase());
-
-  return uppercasedArray;
+  return Object.keys(obj).map((element) => element.toUpperCase());
 }
 
 /*
