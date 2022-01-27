@@ -9,8 +9,16 @@
  Пример:
    forEach([1, 2, 3], (el) => console.log(el))
  */
-function forEach(array, fn) {}
 
+// import {assertArray} from "@babel/core/lib/config/validation/option-assertions";
+
+function forEach(array, fn) {
+  for (let i = 0; i < array.length; i++) {
+    fn(array[i]);
+  }
+}
+
+forEach([1, 2, 5, 6, 7], (el) => console.log(el * el));
 /*
  Задание 2:
 
@@ -20,7 +28,15 @@ function forEach(array, fn) {}
  Пример:
    map([1, 2, 3], (el) => el ** 2) // [1, 4, 9]
  */
-function map(array, fn) {}
+function map(array, fn) {
+  const newArray = [];
+
+  array.forEach((element) => {
+    newArray.push(fn(element));
+  });
+
+  return newArray;
+}
 
 /*
  Задание 3:
@@ -31,7 +47,29 @@ function map(array, fn) {}
  Пример:
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
-function reduce(array, fn, initial) {}
+
+function reduce(array, fn, initial) {
+  let total;
+
+  if (initial === undefined) {
+    total = undefined;
+  } else {
+    total = initial;
+  }
+
+  for (let i = 0; i < array.length; i++) {
+    if (total === undefined) {
+      total = array[i];
+      continue;
+    }
+
+    total = fn(total, array[i]);
+  }
+
+  return total;
+}
+
+reduce([1, 2, 3], (all, current) => all + current);
 
 /*
  Задание 4:
@@ -41,7 +79,13 @@ function reduce(array, fn, initial) {}
  Пример:
    upperProps({ name: 'Сергей', lastName: 'Петров' }) вернет ['NAME', 'LASTNAME']
  */
-function upperProps(obj) {}
+
+// eslint-disable-next-line no-unused-vars
+function upperProps(obj) {
+  const uppercasedArray = Object.keys(obj).map((element) => element.toUpperCase());
+
+  return uppercasedArray;
+}
 
 /*
  Задание 5 *:
@@ -54,6 +98,19 @@ function upperProps(obj) {}
    obj.foo = 2;
    console.log(obj.foo); // 4
  */
-function createProxy(obj) {}
+
+function createProxy(obj) {
+  return new Proxy(obj, {
+    set(target, prop, val) {
+      if (typeof val == 'number') {
+        target[prop] = val * val;
+
+        return true;
+      } else {
+        return false;
+      }
+    },
+  });
+}
 
 export { forEach, map, reduce, upperProps, createProxy };
