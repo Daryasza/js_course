@@ -18,9 +18,9 @@
  */
 function isAllTrue(array, fn) {
   if (array.length === 0 || Object.prototype.toString.call(array) !== '[object Array]') {
-    throw 'empty array';
+    throw new Error('empty array');
   } else if (typeof fn !== 'function') {
-    throw 'fn is not a function';
+    throw new Error('fn is not a function');
   }
 
   for (let i = 0; i < array.length; i++) {
@@ -28,6 +28,7 @@ function isAllTrue(array, fn) {
       return false;
     }
   }
+
   return true;
 }
 
@@ -49,9 +50,9 @@ function isAllTrue(array, fn) {
  */
 function isSomeTrue(array, fn) {
   if (array.length === 0 || Object.prototype.toString.call(array) !== '[object Array]') {
-    throw 'empty array';
+    throw new Error('empty array');
   } else if (typeof fn !== 'function') {
-    throw 'fn is not a function';
+    throw new Error('fn is not a function');
   }
 
   for (let i = 0; i < array.length; i++) {
@@ -59,6 +60,7 @@ function isSomeTrue(array, fn) {
       return true;
     }
   }
+
   return false;
 }
 
@@ -75,7 +77,7 @@ function isSomeTrue(array, fn) {
  */
 function returnBadArguments(fn, ...args) {
   if (typeof fn !== 'function') {
-    throw 'fn is not a function';
+    throw new Error('fn is not a function');
   }
 
   const newArray = [];
@@ -110,42 +112,32 @@ function returnBadArguments(fn, ...args) {
  */
 function calculator(number = 0) {
   if (typeof number !== 'number') {
-    throw 'number is not a number';
+    throw new Error('number is not a number');
   }
 
-  const obj = {
+  return {
     sum: (...args) => {
-      const agrSum = args.reduce((total, current) => total + current);
-
-      return number + agrSum;
+      return args.reduce((total, current) => total + current, number);
     },
 
     dif: (...args) => {
-      for (let i = 0; i < args.length; i++) {
-        number -= args[i];
-      }
-
-      return number;
+      return args.reduce((total, current) => total - current, number);
     },
     div: (...args) => {
       for (let i = 0; i < args.length; i++) {
         if (args[i] === 0) {
-          throw 'division by 0';
+          throw new Error('division by 0');
         }
 
         number /= args[i];
       }
+
       return number;
     },
     mul: (...args) => {
-      for (let i = 0; i < args.length; i++) {
-        number *= args[i];
-      }
-      return number;
+      return args.reduce((total, current) => total * current, number);
     },
   };
-
-  return obj;
 }
 
 /* При решении задач, постарайтесь использовать отладчик */
