@@ -49,9 +49,8 @@ function map(array, fn) {
 
 function reduce(array, fn, initial) {
   let total = initial || array[0];
-  let i = initial === undefined ? 1 : 0;
 
-  for (; i < array.length; i++) {
+  for (let i = initial === undefined ? 1 : 0; i < array.length; i++) {
     total = fn(total, array[i], i, array);
   }
 
