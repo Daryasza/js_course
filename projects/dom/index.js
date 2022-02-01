@@ -10,7 +10,12 @@
  Пример:
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
-function createDivWithText(text) {}
+function createDivWithText(text) {
+  const newItem = document.createElement('div');
+  newItem.textContent = text;
+
+  return newItem;
+}
 
 /*
  Задание 2:
@@ -20,7 +25,9 @@ function createDivWithText(text) {}
  Пример:
    prepend(document.querySelector('#one'), document.querySelector('#two')) // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
  */
-function prepend(what, where) {}
+function prepend(what, where) {
+  return where.prepend(what);
+}
 
 /*
  Задание 3:
@@ -41,7 +48,18 @@ function prepend(what, where) {}
 
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
-function findAllPSiblings(where) {}
+function findAllPSiblings(where) {
+  const PSArr = [];
+  const children = where.children;
+
+  for (let i = 0; i < children.length - 1; i++) {
+    if (children[i].nextElementSibling.nodeName === 'P') {
+      PSArr.push(children[i]);
+    }
+  }
+
+  return PSArr;
+}
 
 /*
  Задание 4:
@@ -63,7 +81,7 @@ function findAllPSiblings(where) {}
 function findError(where) {
   const result = [];
 
-  for (const child of where.childNodes) {
+  for (const child of where.children) {
     result.push(child.textContent);
   }
 
@@ -82,7 +100,13 @@ function findError(where) {
    После выполнения функции, дерево <div></div>привет<p></p>loftchool!!!
    должно быть преобразовано в <div></div><p></p>
  */
-function deleteTextNodes(where) {}
+function deleteTextNodes(where) {
+  for (const node of where.childNodes) {
+    if (node.nodeType === 3) {
+      node.remove();
+    }
+  }
+}
 
 /*
  Задание 6:
@@ -95,7 +119,20 @@ function deleteTextNodes(where) {}
    После выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
-function deleteTextNodesRecursive(where) {}
+function deleteTextNodesRecursive(where) {
+  const children = where.childNodes;
+
+  for (let i = 0; i < children.length; i++) {
+    const node = children[i];
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      node.remove();
+      i--; // нужно обновить i так как только что был удален 1 узел из childNodes
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      deleteTextNodesRecursive(node);
+    }
+  }
+}
 
 /*
  Задание 7 *:
@@ -109,7 +146,12 @@ function deleteTextNodesRecursive(where) {}
  Постарайтесь не создавать глобальных переменных
 
  Пример:
-   Для дерева <div class="some-class-1"><b>привет!</b> <b class="some-class-1 some-class-2">loftschool</b></div>
+   Для дерева 
+
+   <div class="some-class-1">
+    <b>привет!</b> <b class="some-class-1 some-class-2">loftschool</b>
+   </div>
+
    должен быть возвращен такой объект:
    {
      tags: { DIV: 1, B: 2},
@@ -117,7 +159,36 @@ function deleteTextNodesRecursive(where) {}
      texts: 3
    }
  */
-function collectDOMStat(root) {}
+function collectDOMStat(root) {
+  const stats = { tags: {}, classes: {}, texts: 0 };
+
+  function collectInside(root) {
+    for (const node of root.childNodes) {
+      if (node.nodeType === 1) {
+        if (stats.tags[node.tagName] === undefined) {
+          stats.tags[node.tagName] = 1;
+        } else {
+          stats.tags[node.tagName]++;
+        }
+
+        for (const name of node.classList) {
+          if (name in stats.classes) {
+            stats.classes[name]++;
+          } else {
+            stats.classes[name] = 1;
+          }
+        }
+
+        collectInside(node);
+      } else if (node.nodeType === 3) {
+        stats.texts++;
+      }
+    }
+  }
+  collectInside(root);
+
+  return stats;
+}
 
 /*
  Задание 8 *:
