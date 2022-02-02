@@ -162,9 +162,11 @@ function deleteTextNodesRecursive(where) {
 function collectDOMStat(root) {
   const stats = { tags: {}, classes: {}, texts: 0 };
 
+  //описываем отдельно функцию, чтобы можно было ее рекурсивно вызвать внутри, сохраняя результат, который уже имеем в stats
   function collectInside(root) {
     for (const node of root.childNodes) {
       if (node.nodeType === 1) {
+        //проверяем, если нет такого свойства, то вернет undefined
         if (stats.tags[node.tagName] === undefined) {
           stats.tags[node.tagName] = 1;
         } else {
@@ -172,19 +174,22 @@ function collectDOMStat(root) {
         }
 
         for (const name of node.classList) {
+          //  оператор in вернет true если такое свойство есть в этом объекте
           if (name in stats.classes) {
             stats.classes[name]++;
           } else {
             stats.classes[name] = 1;
           }
         }
-
+        //вызываем функцию рекурсивно для всех вложенных узлов
         collectInside(node);
       } else if (node.nodeType === 3) {
         stats.texts++;
       }
     }
   }
+
+  //вызываем функцию
   collectInside(root);
 
   return stats;
@@ -222,7 +227,35 @@ function collectDOMStat(root) {
      nodes: [div]
    }
  */
-function observeChildNodes(where, fn) {}
+function observeChildNodes(where, fn) {
+  // Создаём экземпляр наблюдателя с указанной функцией колбэка:
+  const observer = new MutationObserver(callback);
+
+  //callback при срабатывании мутации в where:
+  function callback(mutationRecordArr, observer) {
+    for (const mutation of mutationRecordArr) {
+      // проверяем изменения только childList (отдельно subtree проверять не нужно)
+      // 'если изменилось кол-во элементов'
+      if (mutation.type === 'childList') {
+        // передаем функции fn объект со св-вами type & nodes:
+        fn({
+          // тернарный оператор: проверяем были ли удалены узлы (если removedNodes.length > 0, значит было удаление, если = 0, значит было добавление, так как fn вызывается только в том случае, если изменилось кол-во узлов)
+          // приведение к булевому значению: если removedNodes.length !== 0 (было удаление), возвращает true; если removedNodes.length = 0, вернет false
+          type: mutation.removedNodes.length ? 'remove' : 'insert',
+          // rest parameter + тернарный оператор: проверяем ..
+          nodes: [
+            ...(mutation.removedNodes.length
+              ? mutation.removedNodes
+              : mutation.addedNodes),
+          ],
+        });
+      }
+    }
+  }
+  // Начинаем наблюдение за указанными изменениями целевого элемента (дочерние элементы + все потомки)
+  // Чтобы следить за изменениями на всех уровнях дерева, нужно выставить в true как subtree, так и childList
+  observer.observe(where, { childList: true, subtree: true });
+}
 
 export {
   createDivWithText,
