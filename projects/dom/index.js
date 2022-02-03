@@ -228,21 +228,17 @@ function collectDOMStat(root) {
    }
  */
 function observeChildNodes(where, fn) {
-  // Создаём экземпляр наблюдателя с указанной функцией колбэка:
-  const observer = new MutationObserver(callback);
-
-  //callback при срабатывании мутации в where:
-  function callback(mutationRecordArr, observer) {
+  // Создаём экземпляр наблюдателя с указанной функцией, которая вызывается при срабатывании мутации в where:
+  const observer = new MutationObserver((mutationRecordArr, observer) => {
     for (const mutation of mutationRecordArr) {
       // проверяем изменения только childList (отдельно subtree проверять не нужно)
-      // 'если изменилось кол-во элементов'
       if (mutation.type === 'childList') {
         // передаем функции fn объект со св-вами type & nodes:
         fn({
           // тернарный оператор: проверяем были ли удалены узлы (если removedNodes.length > 0, значит было удаление, если = 0, значит было добавление, так как fn вызывается только в том случае, если изменилось кол-во узлов)
-          // приведение к булевому значению: если removedNodes.length !== 0 (было удаление), возвращает true; если removedNodes.length = 0, вернет false
+          // приведение к булевому значению: если removedNodes.length !== 0 (было удаление), возвращает true; если removedNodes.length = 0, вернет false (было добавление)
           type: mutation.removedNodes.length ? 'remove' : 'insert',
-          // rest parameter + тернарный оператор: проверяем ..
+          // rest parameter + тернарный оператор: если было удаление, добавляем в массив узлы, которые были удалены, и наоборот
           nodes: [
             ...(mutation.removedNodes.length
               ? mutation.removedNodes
@@ -251,7 +247,7 @@ function observeChildNodes(where, fn) {
         });
       }
     }
-  }
+  });
   // Начинаем наблюдение за указанными изменениями целевого элемента (дочерние элементы + все потомки)
   // Чтобы следить за изменениями на всех уровнях дерева, нужно выставить в true как subtree, так и childList
   observer.observe(where, { childList: true, subtree: true });
