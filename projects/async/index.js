@@ -30,6 +30,7 @@
  */
 
 import './towns.html';
+import { loadAndSortTowns } from './functions.js';
 
 const homeworkContainer = document.querySelector('#app');
 
@@ -39,7 +40,9 @@ const homeworkContainer = document.querySelector('#app');
  Массив городов пожно получить отправив асинхронный запрос по адресу
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
-function loadTowns() {}
+function loadTowns() {
+  return loadAndSortTowns();
+}
 
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
@@ -52,7 +55,13 @@ function loadTowns() {}
    isMatching('Moscow', 'SCO') // true
    isMatching('Moscow', 'Moscov') // false
  */
-function isMatching(full, chunk) {}
+function isMatching(full, chunk) {
+  if (chunk !== '') {
+    return full.toLowerCase().includes(chunk.toLowerCase());
+    // return full.toLowerCase().indexOf(chunk.toLowerCase()) === -1 ? false : true;
+  }
+  return false;
+}
 
 /* Блок с надписью "Загрузка" */
 const loadingBlock = homeworkContainer.querySelector('#loading-block');
@@ -67,8 +76,38 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
-retryButton.addEventListener('click', () => {});
+loadingFailedBlock.style.visibility = 'hidden';
+filterBlock.style.visibility = 'hidden';
 
-filterInput.addEventListener('input', function () {});
+loadTowns()
+  .then((citiesFilteredList) => {
+    loadingBlock.style.visibility = 'hidden';
+    filterInput.style.visibility = 'visible';
+
+    filterInput.addEventListener('input', (e) => {
+      for (const city of citiesFilteredList) {
+        const inputCity = filterInput.value;
+
+        if (isMatching(city['name'], inputCity)) {
+          const resultString = document.createElement('div');
+          resultString.textContent = city['name'];
+          filterResult.appendChild(resultString);
+        } else if (!inputCity) {
+          filterResult.innerHTML = '';
+        }
+      }
+    });
+  })
+  .catch(() => {
+    loadingFailedBlock.style.visibility = 'visible';
+    retryButton.style.visibility = 'visible';
+    loadingBlock.style.visibility = 'hidden';
+
+    retryButton.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      /////////////////////////////////////////?
+    });
+  });
 
 export { loadTowns, isMatching };
