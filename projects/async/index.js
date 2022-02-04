@@ -56,11 +56,7 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
-  if (chunk !== '') {
-    return full.toLowerCase().includes(chunk.toLowerCase());
-    // return full.toLowerCase().indexOf(chunk.toLowerCase()) === -1 ? false : true;
-  }
-  return false;
+  return full.toLowerCase().includes(chunk.toLowerCase());
 }
 
 /* Блок с надписью "Загрузка" */
@@ -85,15 +81,18 @@ loadTowns()
     filterInput.style.visibility = 'visible';
 
     filterInput.addEventListener('input', (e) => {
-      for (const city of citiesFilteredList) {
-        const inputCity = filterInput.value;
+      const inputCity = filterInput.value;
 
+      if (!inputCity) {
+        filterResult.innerHTML = '';
+        return;
+      }
+
+      for (const city of citiesFilteredList) {
         if (isMatching(city['name'], inputCity)) {
           const resultString = document.createElement('div');
           resultString.textContent = city['name'];
           filterResult.appendChild(resultString);
-        } else if (!inputCity) {
-          filterResult.innerHTML = '';
         }
       }
     });
