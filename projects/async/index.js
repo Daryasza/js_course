@@ -83,17 +83,16 @@ loadTowns()
     filterInput.addEventListener('input', (e) => {
       const inputCity = filterInput.value;
 
-      if (!inputCity) {
-        filterResult.innerHTML = '';
-        return;
-      }
-
-      for (const city of citiesFilteredList) {
-        if (isMatching(city['name'], inputCity)) {
-          const resultString = document.createElement('div');
-          resultString.textContent = city['name'];
-          filterResult.appendChild(resultString);
+      if (inputCity) {
+        for (const city of citiesFilteredList) {
+          if (isMatching(city['name'], inputCity)) {
+            const resultString = document.createElement('div');
+            resultString.textContent = city['name'];
+            filterResult.appendChild(resultString);
+          }
         }
+      } else {
+        filterResult.innerHTML = '';
       }
     });
   })
