@@ -88,7 +88,7 @@ loadTowns()
           if (isMatching(city['name'], inputCity)) {
             const resultString = document.createElement('div');
             resultString.textContent = city['name'];
-            filterResult.appendChild(resultString);
+            filterResult.append(resultString);
           }
         }
       } else {
