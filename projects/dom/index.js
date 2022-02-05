@@ -50,12 +50,10 @@ function prepend(what, where) {
  */
 function findAllPSiblings(where) {
   const PSArr = [];
-  const children = where.children;
 
-  for (let i = 0; i < children.length - 1; i++) {
-    if (children[i].nextElementSibling.nodeName === 'P') {
-      PSArr.push(children[i]);
-    }
+  for (const element of where.children) {
+    if (element.nextElementSibling && element.nextElementSibling.nodeName === 'P')
+      PSArr.push(element);
   }
 
   return PSArr;
@@ -101,9 +99,12 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
-  for (const node of where.childNodes) {
+  for (let i = 0; i < where.childNodes.length; i++) {
+    const node = where.childNodes[i];
+
     if (node.nodeType === 3) {
       node.remove();
+      i--;
     }
   }
 }
@@ -127,7 +128,7 @@ function deleteTextNodesRecursive(where) {
 
     if (node.nodeType === Node.TEXT_NODE) {
       node.remove();
-      i--; // нужно обновить i так как только что был удален 1 узел из childNodes
+      i--;
     } else if (node.nodeType === Node.ELEMENT_NODE) {
       deleteTextNodesRecursive(node);
     }
