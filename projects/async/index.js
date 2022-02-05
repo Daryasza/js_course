@@ -72,40 +72,47 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
+let towns = [];
+
 loadingFailedBlock.style.visibility = 'hidden';
 filterBlock.style.visibility = 'hidden';
 
-loadTowns()
-  .then((citiesFilteredList) => {
+filterInput.addEventListener('input', function () {
+  updateFilter(this.value);
+});
+
+retryButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  tryToLoad();
+});
+
+async function tryToLoad() {
+  try {
+    towns = await loadTowns();
     loadingBlock.style.visibility = 'hidden';
-    filterInput.style.visibility = 'visible';
-
-    filterInput.addEventListener('input', (e) => {
-      const inputCity = filterInput.value;
-
-      if (inputCity) {
-        for (const city of citiesFilteredList) {
-          if (isMatching(city['name'], inputCity)) {
-            const resultString = document.createElement('div');
-            resultString.textContent = city['name'];
-            filterResult.append(resultString);
-          }
-        }
-      } else {
-        filterResult.innerHTML = '';
-      }
-    });
-  })
-  .catch(() => {
+    loadingFailedBlock.style.visibility = 'hidden';
+    filterBlock.style.visibility = 'hidden';
+  } catch (error) {
     loadingFailedBlock.style.visibility = 'visible';
     retryButton.style.visibility = 'visible';
-    loadingBlock.style.visibility = 'hidden';
+  }
+}
 
-    retryButton.addEventListener('click', (e) => {
-      e.preventDefault();
+function updateFilter(val) {
+  filterResult.innerHTML = '';
 
-      /////////////////////////////////////////?
-    });
-  });
+  const fragment = document.createDocumentFragment();
+
+  for (const town of towns) {
+    if (val && isMatching(town['name'], val)) {
+      const resultString = document.createElement('div');
+      resultString.textContent = town['name'];
+      fragment.append(resultString);
+    }
+  }
+  filterResult.append(fragment);
+}
+
+tryToLoad();
 
 export { loadTowns, isMatching };
