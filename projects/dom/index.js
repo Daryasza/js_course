@@ -49,12 +49,11 @@ function prepend(what, where) {
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
-  const allP = where.querySelectorAll('P');
   const arr = [];
 
-  for (const node of allP) {
-    if (node.previousSibling) {
-      arr.push(node.previousSibling);
+  for (const Pnode of where.querySelectorAll('P')) {
+    if (Pnode.previousSibling) {
+      arr.push(Pnode.previousSibling);
     }
   }
 
@@ -115,7 +114,6 @@ function deleteTextNodes(where) {
     }
   }
 }
-
 /*
  Задание 6:
 
