@@ -170,7 +170,7 @@ function deleteTextNodesRecursive(where) {
 function collectDOMStat(root) {
   const stats = { tags: {}, classes: {}, texts: 0 };
 
-  //описываем самовызывающуюся функцию
+  //описываем самовызывающуюся функцию, чтобы не вызывать ее отдельно после описания
   (function collectInside(root) {
     for (const node of root.childNodes) {
       if (node.nodeType === 1) {
