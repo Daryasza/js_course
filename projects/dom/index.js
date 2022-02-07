@@ -49,14 +49,24 @@ function prepend(what, where) {
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
-  const PSArr = [];
+  const allP = where.querySelectorAll('P');
+  const arr = [];
 
-  for (const element of where.children) {
-    if (element.nextElementSibling && element.nextElementSibling.nodeName === 'P')
-      PSArr.push(element);
+  for (const node of allP) {
+    if (node.previousSibling) {
+      arr.push(node.previousSibling);
+    }
   }
 
-  return PSArr;
+  return arr;
+
+  // const arr = [];
+  // for (const element of where.children) {
+  //   if (element.nextElementSibling && element.nextElementSibling.nodeName === 'P'){
+  //     arr.push(element);
+  //   }
+  // }
+  // return arr;
 }
 
 /*
@@ -99,12 +109,9 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
-  for (let i = 0; i < where.childNodes.length; i++) {
-    const node = where.childNodes[i];
-
+  for (const node of where.childNodes) {
     if (node.nodeType === 3) {
       node.remove();
-      i--;
     }
   }
 }
@@ -163,8 +170,8 @@ function deleteTextNodesRecursive(where) {
 function collectDOMStat(root) {
   const stats = { tags: {}, classes: {}, texts: 0 };
 
-  //описываем отдельно функцию, чтобы можно было ее рекурсивно вызвать внутри, сохраняя результат, который уже имеем в stats
-  function collectInside(root) {
+  //описываем самовызывающуюся функцию
+  (function collectInside(root) {
     for (const node of root.childNodes) {
       if (node.nodeType === 1) {
         //проверяем, если нет такого свойства, то вернет undefined
@@ -188,10 +195,7 @@ function collectDOMStat(root) {
         stats.texts++;
       }
     }
-  }
-
-  //вызываем функцию
-  collectInside(root);
+  })(root);
 
   return stats;
 }
