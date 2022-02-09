@@ -15,13 +15,48 @@
    const newDiv = document.createElement('div');
    homeworkContainer.appendChild(newDiv);
  */
-import './dnd.html';
+// import './dnd.html';
 
 const homeworkContainer = document.querySelector('#app');
 
-document.addEventListener('mousemove', (e) => {});
+function moveAt(pageX, pageY) {
+  const divs = document.querySelectorAll('draggable-div');
+  divs.forEach((div) => {
+    div.style.left = pageX - div.offsetWidth / 2 + 'px';
+    div.style.top = pageY - div.offsetHeight / 2 + 'px';
+  });
+}
 
-export function createDiv() {}
+document.addEventListener('mousemove', (e) => {
+  moveAt(e.pageX, e.pageY);
+});
+
+//export
+
+function createDiv() {
+  const newDiv = document.createElement('div');
+
+  // toString(16) преобразует число в строку, используя шестнадцатеричное основание;
+  // Math.random() генерирует случайное число с плавающей точкой от 0 до 1;
+  // Math.floor() округляет число в меньшую сторону;
+  const randomColor = '#' + Math.round(Math.random() * 16777215).toString(16);
+  const randomWidth = Math.floor(Math.random() * 150);
+  const randomHeight = Math.floor(Math.random() * 150);
+  const randomPosY = Math.floor(Math.random() * (window.innerHeight - 150));
+  const randomPosX = Math.floor(Math.random() * (window.innerWidth - 150));
+
+  newDiv.style.cssText = `
+    background-color: ${randomColor};
+    width: ${randomWidth}px;
+    height:${randomHeight}px;
+    top: ${randomPosY}px;
+    left: ${randomPosX}px;
+  `;
+  newDiv.classList.add('draggable-div');
+  newDiv.setAttribute('draggable', true);
+
+  return newDiv;
+}
 
 const addDivButton = homeworkContainer.querySelector('#addDiv');
 
