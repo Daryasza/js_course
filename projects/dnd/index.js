@@ -15,23 +15,15 @@
    const newDiv = document.createElement('div');
    homeworkContainer.appendChild(newDiv);
  */
-// import './dnd.html';
+import './dnd.html';
 
 const homeworkContainer = document.querySelector('#app');
+const addDivButton = homeworkContainer.querySelector('#addDiv');
 
-function moveAt(pageX, pageY) {
-  const divs = document.querySelectorAll('draggable-div');
-  divs.forEach((div) => {
-    div.style.left = pageX - div.offsetWidth / 2 + 'px';
-    div.style.top = pageY - div.offsetHeight / 2 + 'px';
-  });
-}
-
-document.addEventListener('mousemove', (e) => {
-  moveAt(e.pageX, e.pageY);
+addDivButton.addEventListener('click', function () {
+  const div = createDiv();
+  homeworkContainer.appendChild(div);
 });
-
-//export
 
 function createDiv() {
   const newDiv = document.createElement('div');
@@ -58,9 +50,13 @@ function createDiv() {
   return newDiv;
 }
 
-const addDivButton = homeworkContainer.querySelector('#addDiv');
+document.addEventListener('dragover', (e) => {
+  e.preventDefault();
 
-addDivButton.addEventListener('click', function () {
-  const div = createDiv();
-  homeworkContainer.appendChild(div);
+  if (e.target.classList.contains('draggable-div')) {
+    e.target.style.left = e.pageX - e.target.offsetWidth / 2 + 'px';
+    e.target.style.top = e.pageY - e.target.offsetHeight / 2 + 'px';
+  }
 });
+
+export { createDiv };
