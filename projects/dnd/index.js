@@ -20,6 +20,10 @@ import './dnd.html';
 const homeworkContainer = document.querySelector('#app');
 const addDivButton = homeworkContainer.querySelector('#addDiv');
 
+let currentDiv;
+let startX = 0;
+let startY = 0;
+
 addDivButton.addEventListener('click', function () {
   const div = createDiv();
   homeworkContainer.appendChild(div);
@@ -45,17 +49,24 @@ function createDiv() {
     left: ${randomPosX}px;
   `;
   newDiv.classList.add('draggable-div');
-  newDiv.setAttribute('draggable', true);
+
+  newDiv.addEventListener('mousedown', (e) => {
+    currentDiv = newDiv;
+    startX = e.offsetX;
+    startY = e.offsetY;
+  });
+
+  newDiv.addEventListener('mouseup', () => {
+    currentDiv = false;
+  });
 
   return newDiv;
 }
 
-document.addEventListener('dragover', (e) => {
-  e.preventDefault();
-
-  if (e.target.classList.contains('draggable-div')) {
-    e.target.style.left = e.pageX - e.target.offsetWidth / 2 + 'px';
-    e.target.style.top = e.pageY - e.target.offsetHeight / 2 + 'px';
+document.addEventListener('mousemove', (e) => {
+  if (currentDiv) {
+    currentDiv.style.top = e.pageY - startY + 'px';
+    currentDiv.style.left = e.pageX - startX + 'px';
   }
 });
 
