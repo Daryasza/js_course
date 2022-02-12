@@ -44,9 +44,75 @@ const addValueInput = homeworkContainer.querySelector('#add-value-input');
 const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
+//map с куками
+const cookiesMap = getCookies();
 
-filterNameInput.addEventListener('input', function () {});
+//при перезагрузке очищаем фильтр
+let filterValue = '';
+//отрисовываем таблицу с куками
+updateCookies();
 
-addButton.addEventListener('click', () => {});
+filterNameInput.addEventListener('input', function () {
+  filterValue = this.value;
+  updateCookies();
+});
 
-listTable.addEventListener('click', (e) => {});
+addButton.addEventListener('click', (e) => {
+  const name = addNameInput.value;
+  const value = addValueInput.value;
+
+  if (!name) {
+    return;
+  }
+
+  document.cookie = `${name} = ${value}`;
+  cookiesMap.set(name, value);
+
+  updateCookies();
+});
+
+listTable.addEventListener('click', (e) => {
+  const cookie = e.target.dataset.key;
+
+  if (cookie) {
+    document.cookie = cookie + `=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+    cookiesMap.delete(cookie);
+  }
+  updateCookies();
+});
+
+function getCookies() {
+  return document.cookie
+    .split('; ')
+    .filter(Boolean)
+    .reduce((prev, current) => {
+      const [, value] = current.split('=');
+      prev.name = value;
+
+      return prev;
+    }, new Map());
+}
+
+function updateCookies() {
+  listTable.innerHTML = '';
+
+  for (const [name, value] of cookiesMap) {
+    if (filterValue && !isMaching(name, filterValue) && !isMaching(value, filterValue)) {
+      continue;
+    }
+
+    listTable.innerHTML += `
+      <tr>
+        <td>${name}</td>
+        <td class = 'value'>${value}</td>
+        <td> 
+          <button data-key="${name}">Удалить</button>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function isMaching(full, chunk) {
+  return full.toLowerCase().includes(chunk.toLowerCase());
+}
