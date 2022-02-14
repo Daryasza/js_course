@@ -50,13 +50,17 @@ function createDiv() {
   `;
   newDiv.classList.add('draggable-div');
 
-  newDiv.addEventListener('mousedown', (e) => {
-    currentDiv = newDiv;
+  document.addEventListener('mousedown', (e) => {
+    if (e.target !== newDiv) return;
+
+    currentDiv = e.target;
     startX = e.offsetX;
     startY = e.offsetY;
   });
 
-  newDiv.addEventListener('mouseup', () => {
+  document.addEventListener('mouseup', (e) => {
+    if (e.target !== newDiv) return;
+
     currentDiv = false;
   });
 
