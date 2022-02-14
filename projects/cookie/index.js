@@ -94,6 +94,9 @@ function getCookies() {
 }
 
 function updateCookies() {
+  const template = document.createElement('template');
+  let total = 0;
+
   listTable.innerHTML = '';
 
   for (const [name, value] of cookiesMap) {
@@ -101,7 +104,9 @@ function updateCookies() {
       continue;
     }
 
-    listTable.innerHTML += `
+    total++;
+
+    template.innerHTML += `
       <tr>
         <td>${name}</td>
         <td class = 'value'>${value}</td>
@@ -110,6 +115,10 @@ function updateCookies() {
         </td>
       </tr>
     `;
+  }
+
+  if (total) {
+    listTable.append(template.content);
   }
 }
 
