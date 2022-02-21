@@ -1,4 +1,4 @@
-const CryptoJS = window.crypto;
+const CryptoJS = window.CryptoJS;
 
 export default class ReviewStorage {
   constructor() {
