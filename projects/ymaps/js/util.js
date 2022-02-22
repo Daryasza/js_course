@@ -6,6 +6,7 @@ export function getFormInput(form) {
     place: form.elements.place,
     review: form.elements.review,
   };
+
   if (validateForm(input)) {
     inputCheck();
     return input;
@@ -14,9 +15,11 @@ export function getFormInput(form) {
 
 export function saveData(coords, reviewData) {
   const review = reviewData;
+
   Object.keys(review).forEach((key) => {
     review[key] = review[key].value;
   });
+
   review['date'] = new Date().toISOString().substring(0, 10);
   new ReviewStorage().addReview(coords, review);
 }

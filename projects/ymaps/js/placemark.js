@@ -4,7 +4,8 @@ import * as tpl from './template.js';
 const ymaps = window.ymaps;
 
 export function setExistingPlacemarks(cluster, handler) {
-  const reviewMap = new ReviewStorage().getReviewMap();
+  const reviewMap = new ReviewStorage().getReviews();
+
   Object.keys(reviewMap).forEach((key) => {
     const placemark = createPlacemark(key.split(','), cluster, handler);
     updatePlacemarkContent(placemark);
@@ -25,6 +26,7 @@ export function updatePlacemarkContent(placemark) {
     balloonContentFooter: tpl.templateForm,
     iconContent: reviews.length > 1 ? reviews.length : '',
   });
+
   placemark.options.set({
     preset: reviews.length > 1 ? 'islands#blueCircleIcon' : '',
   });
@@ -32,9 +34,11 @@ export function updatePlacemarkContent(placemark) {
 
 export function createPlacemark(coords, cluster, handler) {
   const placemark = new ymaps.Placemark(coords);
+
   placemark.events.add('balloonopen', () => {
     handler(coords);
   });
+
   cluster.add(placemark);
 
   return placemark;

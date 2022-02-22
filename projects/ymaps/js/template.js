@@ -3,12 +3,13 @@ export const templateReviews = `
     <li class="left-review">
       <div class="left-review__title">
         <span class="left-review__author"> {{name}}</span>
-        <span class="left-review__place"> [{{place}}]</span>
+        <span class="left-review__place"> {{place}}</span>
         <span class="left-review__date"> {{date}}</span>
       </div>
       <div class="left-review__text"> {{review}}</div>
     </li>
   </ul>`;
+
 export const templateForm = `
   <form class="review" id="review">
     <div class="review__heading">Отзыв:</div>
@@ -19,6 +20,7 @@ export const templateForm = `
     </div>
     <button class="review__btn" type="submit">Добавить</button>
   </form>`;
+
 export const templateClusterLayout =
   '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>';
 
